@@ -20,7 +20,7 @@ type ViewController (handle:IntPtr) =
 
     let scale = 100000.0<km>/1.0<m>
 
-    let mutable leftEyeView : ARSCNView = null
+    let mutable arsceneview : ARSCNView = null
 
     // Matrices are column-major
     let positionFromTransform (xform : NMatrix4 ) = new SCNVector3(xform.M41, xform.M42, xform.M43)
@@ -70,7 +70,6 @@ type ViewController (handle:IntPtr) =
        // Position the moon 
        let moonDistance = 384400.0<km>
        let scaledDistance = (moonDistance / scale ) |> float32 |> fun f -> f / 5.0f
-       //moon.Scale <- new SCNVector3(5.0f, 5.0f, 5.0f)
        moon.Position <- new SCNVector3(0.f, 0.f, -scaledDistance)
        moonOrbit.Add moon
 
@@ -89,29 +88,17 @@ type ViewController (handle:IntPtr) =
     override this.ViewDidLoad () =
       base.ViewDidLoad ()
        
-      let halfWidth = this.View.Frame.Width / nfloat(2.) 
-      leftEyeView <- new ARSCNView()
-      leftEyeView.Frame <- new CGRect(nfloat(0.), nfloat(0.), halfWidth, this.View.Frame.Height)
+      arsceneview <- new ARSCNView()
+      arsceneview.Frame <- this.View.Frame
       //arsceneview.DebugOptions <- ARSCNDebugOptions.ShowFeaturePoints + ARSCNDebugOptions.ShowWorldOrigin
 
-      let rightEyeView = new ARSCNView()
-      rightEyeView.Frame <- new CGRect(halfWidth, nfloat(0.), halfWidth, this.View.Frame.Height)
- 
-      this.View.AddSubview leftEyeView
-      this.View.AddSubview rightEyeView
+      this.View.AddSubview arsceneview
 
       // Configure ARKit 
       let configuration = new ARWorldTrackingConfiguration()
       configuration.PlaneDetection <- ARPlaneDetection.Horizontal
 
-      rightEyeView.Session <- leftEyeView.Session
-      let offsetNode = new SCNNode()
-      offsetNode.Position <- new SCNVector3(0.072f, 0.f, 0.f)
-      rightEyeView.Scene.RootNode.Add offsetNode
-      let ems2 = earthMoonSystem.Clone()
-      offsetNode.Add ems2
-
-      earthMoonSystem |> leftEyeView.Scene.RootNode.Add
+      earthMoonSystem |> arsceneview.Scene.RootNode.Add
 
       // This method is called subsequent to `ViewDidLoad` so we know arsceneview is instantiated
-      leftEyeView.Session.Run (configuration, ARSessionRunOptions.RemoveExistingAnchors)
+      arsceneview.Session.Run (configuration, ARSessionRunOptions.RemoveExistingAnchors)
