@@ -37,8 +37,8 @@ type ViewController (handle:IntPtr) =
        [
        ("earth", { Name = "Earth"; Radius = 6371.0<km>; Surface = material "Earth.png" } );
        ("moon", { Name = "Moon"; Radius = 1079.0<km>; Surface = material "moon-4k.png" }  );
-       ("jupiter", { Name = "Jupiter"; Radius = 139822.<km>; Surface = material "realj2k.jpg" }) ;
-       ("sun", { Name = "Sun"; Radius = 1391400.<km>; Surface = material "realj2k.jpg"})
+       ("jupiter", { Name = "Jupiter"; Radius = 139822.<km>; Surface = material "jupiter-2k.jpg" }) ;
+       ("sun", { Name = "Sun"; Radius = 1391400.<km>; Surface = material "jupiter-2k.jpg"})
        ] |> Map.ofList
 
      
